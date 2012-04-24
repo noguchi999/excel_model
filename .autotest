@@ -1,0 +1,4 @@
+require 'autotest/growl'
+require 'autotest/rcov'
+
+Autotest::Growl::image_dir = File.join(ENV['HOME'], 'MyPicture/growl/autotest_image')

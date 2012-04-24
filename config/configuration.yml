@@ -1,0 +1,18 @@
+#adminには設定ファイルの管理者の名前を設定してください。ここに記載されている名前はJavaDocコメント等に利用されます。
+#Generatorの実行結果をメールで受け取りたい場合は、e-mailにメールアドレスを設定してください。;区切りで複数のメールアドレスを設定することが出来ます。
+#sheet_namesを設定しない場合は、対象のエクセルの全シートが対象となります。
+#data_rangeを設定しない場合は、title_rangeの次行以降、title_rangeの列範囲が全て空白となる行までが対象となります。
+#exclude_sheet_namesに設定されたシートはモデル化の処理対象外となります。 
+
+common: &common
+    !ruby/sym file_path:             'test.xls'
+    !ruby/sym title_range:           'B6:F6'
+
+development:
+  <<: *common
+
+test:
+  <<: *common
+
+product:
+  <<: *common
