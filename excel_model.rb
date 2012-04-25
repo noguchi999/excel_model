@@ -2,19 +2,31 @@
 require 'yaml'
 require 'win32ole'
 require 'spreadsheet'
-require File.expand_path('../../lib/string', __FILE__)
+require File.expand_path('../lib/string', __FILE__)
 
 module ExcelModel
   class Base
     attr_reader :configuration, :records, :book
         
-    def initialize(configuration_file, env='development')
-      @configuration ||= YAML.load_file(configuration_file)[env]
-
-      unless WIN32OLE_TYPE.progids.grep(/Excel.Application/).empty?
-        @book   = WorkBookModel.new(@configuration)
+    def initialize(_configuration, env=:development)
+      env = env.to_sym
+    
+      if _configuration.kind_of?(String)
+        if FileTest.file?(_configuration)
+          @configuration ||= YAML.load_file(_configuration)[env]
+        else
+          @configuration ||= YAML.load(_configuration)[env]
+        end
+      elsif _configuration.kind_of?(Hash)
+        @configuration ||= _configuration[env]
       else
-        @book   = SpreadSheetWorkBookModel.new(@configuration)
+        raise "Illegal augment type. #{_configuration}"
+      end
+      
+      if WIN32OLE_TYPE.progids.grep(/Excel.Application/).empty?
+        @book = SpreadSheetWorkBookModel.new(@configuration)
+      else
+        @book = WorkBookModel.new(@configuration)
       end
       
       @records = @book.sheets[0].records
