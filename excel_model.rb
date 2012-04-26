@@ -39,6 +39,7 @@ module ExcelModel
     def initialize(options = {})
       excel = WIN32OLE::new("excel.Application")
       excel.Visible = false
+      excel.DisplayAlerts = false
       @sheets = []
       begin
         workbook = excel.Workbooks.Open(File.expand_path(options[:file_path].encode("Windows-31J")))
@@ -50,6 +51,7 @@ module ExcelModel
           
           @sheets << WorkSheetModel.new(worksheet, options)
         end
+        workbook.Close false
       rescue
         $stderr.puts $!
       ensure
